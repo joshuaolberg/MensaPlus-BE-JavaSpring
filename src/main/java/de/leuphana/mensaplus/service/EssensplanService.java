@@ -6,6 +6,8 @@ import de.leuphana.mensaplus.model.Wochentag;
 import de.leuphana.mensaplus.repository.EssenRepository;
 import de.leuphana.mensaplus.repository.EssensplanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +44,7 @@ public class EssensplanService {
     }
 
     @Transactional
-    public Essensplan addEssenToEssensplan(int essensplanId, int essenId, int wochentag) {
+    public ResponseEntity<Essensplan> addEssenToEssensplan(int essensplanId, int essenId, int wochentag) {
         Optional<Essensplan> optionalEssensplan = essensplanRepository.findById(essensplanId);
         Optional<Essen> optionalEssen = essenRepository.findById(essenId);
         if (!(optionalEssensplan.isPresent() && optionalEssen.isPresent())) {
@@ -51,12 +53,12 @@ public class EssensplanService {
             Essensplan essensplan = optionalEssensplan.get();
             Essen essen = optionalEssen.get();
             essensplan.getEssenProWoche().put(Wochentag.valueOf(wochentag), essen);
-            return essensplan;
+            return new ResponseEntity<>(essensplan, HttpStatus.OK);
         }
     }
 
     @Transactional
-    public Essensplan deleteEssenFromEssensplan(int essensplanId, int essenId, int wochentag) {
+    public ResponseEntity<Essensplan> removeEssenFromEssensplan(int essensplanId, int essenId, int wochentag) {
         Optional<Essensplan> optionalEssensplan = essensplanRepository.findById(essensplanId);
         Optional<Essen> optionalEssen = essenRepository.findById(essenId);
 
@@ -66,7 +68,7 @@ public class EssensplanService {
             Essensplan essensplan = optionalEssensplan.get();
             Essen essen = optionalEssen.get();
             essensplan.getEssenProWoche().remove(Wochentag.valueOf(wochentag), essen);
-            return essensplan;
+            return new ResponseEntity<>(essensplan, HttpStatus.OK);
         }
     }
 

@@ -3,6 +3,8 @@ package de.leuphana.mensaplus.controller;
 import de.leuphana.mensaplus.model.Essensplan;
 import de.leuphana.mensaplus.service.EssensplanService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,13 +29,15 @@ public class EssensplanController {
     }
 
     @PostMapping
-    public void addEssensplan(@RequestBody Essensplan essensplan) {
+    public ResponseEntity<Essensplan> addEssensplan(@RequestBody Essensplan essensplan) {
         essensplanService.addEssensplan(essensplan);
+        return new ResponseEntity<>(essensplan, HttpStatus.OK);
     }
 
     @PutMapping
-    public Essensplan updateEssen(@RequestBody Essensplan essensplan) {
-        return essensplanService.updateEssensplan(essensplan);
+    public ResponseEntity<Essensplan> updateEssen(@RequestBody Essensplan essensplan) {
+        essensplanService.updateEssensplan(essensplan);
+        return new ResponseEntity<>(essensplan, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
@@ -42,13 +46,13 @@ public class EssensplanController {
     }
 
     @PostMapping(path = "/{essensplanId}/add/{essenId}/wt={wochentag}")
-    public void addEssenToEssensplan(@PathVariable("essensplanId") int essensplanId, @PathVariable("essenId") int essenId, @PathVariable("wochentag") int wochentag) {
-        essensplanService.addEssenToEssensplan(essensplanId, essenId, wochentag);
+    public ResponseEntity<Essensplan> addEssenToEssensplan(@PathVariable("essensplanId") int essensplanId, @PathVariable("essenId") int essenId, @PathVariable("wochentag") int wochentag) {
+        return essensplanService.addEssenToEssensplan(essensplanId, essenId, wochentag);
     }
 
 
-    @DeleteMapping(path = "/{essensplanId}/delete/{essenId}/wt={wochentag}")
-    public void deleteEssenFromEssensplan(@PathVariable("essensplanId") int id, @PathVariable("essenId") int essenId, @PathVariable("wochentag") int wochentag) {
-        essensplanService.deleteEssenFromEssensplan(id, essenId, wochentag);
+    @DeleteMapping(path = "/{essensplanId}/remove/{essenId}/wt={wochentag}")
+    public ResponseEntity<Essensplan> removeEssenFromEssensplan(@PathVariable("essensplanId") int id, @PathVariable("essenId") int essenId, @PathVariable("wochentag") int wochentag) {
+        return essensplanService.removeEssenFromEssensplan(id, essenId, wochentag);
     }
 }

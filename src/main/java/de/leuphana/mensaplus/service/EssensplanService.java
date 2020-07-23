@@ -40,7 +40,12 @@ public class EssensplanService {
     }
 
     public void deleteEssensplanById(int id) {
-        essensplanRepository.deleteById(id);
+        Optional<Essensplan> optionalEssensplan = essensplanRepository.findById(id);
+        if (optionalEssensplan.isPresent()) {
+            Essensplan essensplan = optionalEssensplan.get();
+            essensplan.getEssenProWoche().clear();
+            essensplanRepository.deleteById(id);
+        }
     }
 
     @Transactional
